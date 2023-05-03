@@ -30,7 +30,8 @@ music$Url_spotify=NULL
 
 music <- music[complete.cases(music$Stream), ]
 music <- music[complete.cases(music$Danceability), ]
-sum(is.na(music$Track))
+music <- music[complete.cases(music$Licensed), ]
+sum(is.na(music$Licensed))
 
 
 
@@ -51,6 +52,32 @@ lm_all <- lm(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
                Duration_ms + official_video + Licensed, data = train.data)
 
 ```
+
+
+```{r stepwise-selection, message = F, warning = F}
+stepAIC(lm_none, 
+        scope = list(lower = lm_none, upper = lm_all),
+        data = music, direction = "both")
+
+```
+
+```{r lasso, message = F, error = F}
+y <- music$Stream
+x <- model.matrix(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
+               Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
+               Duration_ms + official_video + Licensed,
+                  data = music)
+
+m_lasso_cv <- cv.glmnet(x, y, alpha = 1)
+summary (m_lasso_cv)
+
+```
+
+
+
+
+
+
 
 
 
