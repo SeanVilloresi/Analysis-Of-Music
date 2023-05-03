@@ -4,6 +4,26 @@ author: "Sean Villoresi and Ellie Kang"
 format: pdf
 ---
 
+## Introduction
+
+Music is an essential part of culture, creativity, and history. Specific songs and types of music can have great significance to groups of people and individuals alike. In America today, the music industry is both highly regarded and hotly debated. One successful song can launch an artist to the top of the charts, etching them into modern history. The importance of music and potential significance of a single song motivates the question - what makes a song successful?
+
+Wanting to explore this question in our project, we found a dataset1 on Kaggle with data on Spotify streams, Youtube views, and various song characteristics. There are 28 columns, and 20,719 observations. The data was collected on Februrary 7th, 2023 by extracting the data from Youtube and Spotify. Our goal is to determine and develop the best model for predicting the success of a song based on the number of streams. We chose to use streams (as opposed to Youtube views) as our outcome variable because of inconsistencies within the data when it comes to music videos. Some music videos were not from the artist’s channel (unofficial), and we wanted to test this variable as a predictor.
+
+Variables: We will be using streams as the model’s outcome variable. We chose the following variables as potential predictors based on their relevance to the listening experience of a song (as opposed to a more descriptive variable such as Description)
+Stream: number of streams of the song on Spotify
+Energy:  a measure from 0.0 to 1.0 representing a perceptual measure (dynamic range, loudness, timbre, onset rate, general entropy) of intensity and activity.
+Key: the key the track is in measured in ntegers representing pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D. If no key was detected, the value is -1.
+Loudness: the overall loudness of a track in decibels (dB)
+Speechiness: a measure from 0.0 to 1.0 representing the presence of spoken words in a track. 
+Acousticness: a from 0.0 to 1.0 of whether the track is acoustic.
+Instrumentalness: a measure from 0.0 to 1.0 that predicts whether a track contains no vocals. 
+Liveness: a measure from 0.0 to 1.0 that detects the presence of an audience in the recording.
+Valence: a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track.
+Tempo: the overall estimated tempo of a track in beats per minute (BPM).
+Duration_ms: the duration of the track in milliseconds.
+Official_video: boolean value that indicates if the video found is the official video of the song.
+We felt that the dataset had a sufficient number of both quantitative and categorical variables to test predictability. Thus, we chose not to create additional predictors. However, in our data cleaning process, we removed any observations with missing values for streams, danceability, and licensed. After removing missing values for these variables, there were no remaining observations with missing data for relevant variables as listed above.
 
 ## Read in the data
 
@@ -21,7 +41,7 @@ library(lme4)
 music <- read_csv("data/Spotify_Youtube.csv")
 ```
 
-##Cleaning the data
+## Cleaning the data
 
 ```{r cleaning, message = F, warning = F}
 music$Uri=NULL
