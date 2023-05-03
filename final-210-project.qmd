@@ -78,9 +78,13 @@ lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechine
 
 
 ```{r stepwise-selection, message = F, warning = F}
-stepAIC(lm_all, 
+output <- capture.output(stepAIC(lm_all, 
         scope = list(lower = lm_none, upper = lm_all),
-        data = music, direction = "both")
+        data = music, direction = "both"))
+
+##Just outputs final step
+cat(tail(output, 39), sep = "\n")
+
 
 ```
 
