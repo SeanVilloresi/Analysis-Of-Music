@@ -31,7 +31,7 @@ music$Url_spotify=NULL
 music <- music[complete.cases(music$Stream), ]
 music <- music[complete.cases(music$Danceability), ]
 music <- music[complete.cases(music$Licensed), ]
-sum(is.na(music$Licensed))
+sum(is.na(music$Speechiness))
 
 
 
@@ -41,7 +41,7 @@ sum(is.na(music$Licensed))
 
 ```{r setup-for-variable-selection, message = F, warning = F}
 
-indices <- sample(1:5000, size = 5000 * 0.8, replace = F)
+indices <- sample(1:19691, size = 15000 * 0.8, replace = F)
 train.data  <- music %>% 
   slice(indices)
 test.data <- music %>% 
