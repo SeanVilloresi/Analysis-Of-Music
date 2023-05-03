@@ -37,6 +37,8 @@ sum(is.na(music$Licensed))
 
 ```
 
+## Variable Selection
+
 ```{r setup-for-variable-selection, message = F, warning = F}
 
 indices <- sample(1:5000, size = 5000 * 0.8, replace = F)
@@ -70,6 +72,10 @@ x <- model.matrix(Stream ~ Danceability + Energy + Key + Loudness + Speechiness 
 
 m_lasso_cv <- cv.glmnet(x, y, alpha = 1)
 summary (m_lasso_cv)
+
+best_lambda <- m_lasso_cv$lambda.min
+m_best <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+m_best$beta 
 
 ```
 
