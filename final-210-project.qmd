@@ -27,6 +27,7 @@ music <- read_csv("data/Spotify_Youtube.csv")
 music$Uri=NULL
 music$Url_youtube=NULL
 music$Url_spotify=NULL
+music$Description=NULL
 
 music <- music[complete.cases(music$Stream), ]
 music <- music[complete.cases(music$Danceability), ]
@@ -49,7 +50,7 @@ test.data <- music %>%
 
 lm_none <- lm(Stream ~ 1 , data = train.data)
 
-lm_all <- lm(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
+lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
                Duration_ms + official_video, data = train.data)
 
@@ -65,7 +66,7 @@ stepAIC(lm_all,
 
 ```{r lasso, message = F, error = F}
 y <- music$Stream
-x <- model.matrix(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
+x <- model.matrix(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
                Duration_ms + official_video,
                   data = music)
@@ -81,7 +82,8 @@ m_best$beta
 
 ```{r end-of-variable-selection, message = F, error = F}
 ## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
-pretransform_model <- lm(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
+pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness 
+                         + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
                Duration_ms + official_video, data = music)
 
@@ -95,7 +97,7 @@ pretransform_model <- lm(Stream ~ Danceability + Energy + Key + Loudness + Speec
 
 ptmodel_aug <- augment(pretransform_model)
 
-transform_model <- lm(log(Stream) ~ Danceability + Energy + Key + Loudness + 
+transform_model <- lm(log(Stream) ~ Danceability + Energy + factor(Key) + Loudness + 
                         Speechiness +Acousticness + Instrumentalness + Liveness 
                       +  Valence + Tempo + Duration_ms + official_video, 
                       data = music)
@@ -134,6 +136,16 @@ ggplot(tmodel_aug, aes(sample = .resid)) +
        y = "Sample quantiles")
 
 ```
+
+
+
+
+
+
+
+
+
+
 
 
 
