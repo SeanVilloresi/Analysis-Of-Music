@@ -51,13 +51,13 @@ lm_none <- lm(Stream ~ 1 , data = train.data)
 
 lm_all <- lm(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
-               Duration_ms + official_video + Licensed, data = train.data)
+               Duration_ms + official_video, data = train.data)
 
 ```
 
 
 ```{r stepwise-selection, message = F, warning = F}
-stepAIC(lm_none, 
+stepAIC(lm_all, 
         scope = list(lower = lm_none, upper = lm_all),
         data = music, direction = "both")
 
@@ -67,11 +67,11 @@ stepAIC(lm_none,
 y <- music$Stream
 x <- model.matrix(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
-               Duration_ms + official_video + Licensed,
+               Duration_ms + official_video,
                   data = music)
 
 m_lasso_cv <- cv.glmnet(x, y, alpha = 1)
-summary (m_lasso_cv)
+
 
 best_lambda <- m_lasso_cv$lambda.min
 m_best <- glmnet(x, y, alpha = 1, lambda = best_lambda)
