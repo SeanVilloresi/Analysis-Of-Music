@@ -79,12 +79,54 @@ m_best$beta
 
 ```
 
+```{r end-of-variable-selection, message = F, error = F}
+## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
+pretransform_model <- lm(Stream ~ Danceability + Energy + Key + Loudness + Speechiness +
+               Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
+               Duration_ms + official_video, data = music)
 
 
 
+```
+
+## Linearity Assumptions and Checks for Transformations
+
+```{r augment-and-residualplot }
+
+ptmodel_aug <- augment(pretransform_model)
+
+transform_model <- lm(log(Stream) ~ Danceability + Energy + Key + Loudness + 
+                        Speechiness +Acousticness + Instrumentalness + Liveness 
+                      +  Valence + Tempo + Duration_ms + official_video, 
+                      data = music)
+
+tmodel_aug <- augment(transform_model)
 
 
+ggplot(ptmodel_aug, aes(x = .fitted, y=.resid)) +
+  geom_point() +
+  geom_hline(yintercept=0, color ="darkred") +
+  labs(x ="Fitted Value of Streams", y = "Residual") +
+  theme_bw()
 
+ggplot(tmodel_aug, aes(x = .fitted, y=.resid)) +
+  geom_point() +
+  geom_hline(yintercept=0, color ="darkred") +
+  labs(x ="Fitted Value of Streams", y = "Residual") +
+  theme_bw()
+
+
+```
+
+``` {r qq-plot, warning = FALSE, message = FALSE}
+ggplot(ptmodel_aug, aes(sample = .resid)) +
+  stat_qq() + 
+  stat_qq_line() + 
+  theme_bw() + 
+  labs(x = "Theoretical quantiles", 
+       y = "Sample quantiles")
+
+```
 
 
 
