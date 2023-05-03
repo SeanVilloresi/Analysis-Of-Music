@@ -10,5 +10,32 @@ format: pdf
 ```{r read-data, message = F, warning = F}
 library(tidyverse)
 library(tidymodels)
-music <- read_csv("data/Spotify_Youtube")
+library(broom)
+library(leaps)
+library(MASS)
+library(caret)
+library(glmnet)
+library(Stat2Data)
+library(nnet)
+library(lme4)
+music <- read_csv("data/Spotify_Youtube.csv")
 ```
+
+##Cleaning the data
+
+```{r cleaning, message = F, warning = F}
+music$Uri=NULL
+music$Url_youtube=NULL
+music$Url_spotify=NULL
+
+music <- music[complete.cases(music$Stream), ]
+music <- music[complete.cases(music$Danceability), ]
+sum(is.na(music$Track))
+
+
+
+```
+
+
+
+
