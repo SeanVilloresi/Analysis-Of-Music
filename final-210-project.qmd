@@ -108,9 +108,6 @@ and 4. Therefore, we chose to keep all the initial predictors when performing va
 ```{r summary-stats, message = F, warning = F, echo = F}
 # i cant put these in a nice tidy table for the life of me
 # also idk how to intrepret them
-summary(music$Stream)
-summary(music$Danceability)
-summary(music$Loudness)
 
 summary_stats <- sapply(music[, c("Stream", "Danceability", "Loudness")], summary)
 
