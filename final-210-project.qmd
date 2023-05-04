@@ -4,7 +4,7 @@ author: "Sean Villoresi and Ellie Kang"
 format: pdf
 ---
 
-## Introduction
+# Introduction
 
 Music is an essential part of culture, creativity, and history. Specific songs and types of music can have great significance to groups of people and individuals alike. In America today, the music industry is both highly regarded and hotly debated. One successful song can launch an artist to the top of the charts, etching them into modern history. The importance of music and potential significance of a single song motivates the question - what makes a song successful?
 
@@ -58,7 +58,7 @@ music <- music[complete.cases(music$Licensed), ]
 
 ```
 
-## Variable Selection
+# Variable Selection
 
 ```{r setup-for-variable-selection, message = F, warning = F, echo = F}
 
@@ -72,7 +72,7 @@ lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechine
 
 ```
 
-
+## Step-wise Selection
 ```{r stepwise-selection, message = F, warning = F, echo = F}
 output <- capture.output(stepAIC(lm_all, 
         scope = list(lower = lm_none, upper = lm_all),
@@ -83,7 +83,7 @@ cat(tail(output, 39), sep = "\n")
 
 
 ```
-
+## Lasso Model
 ```{r lasso, message = F, error = F, echo = F}
 y <- music$Stream
 x <- model.matrix(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechiness +
@@ -111,7 +111,9 @@ pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness
 
 ```
 
-## Linearity Assumptions and Checks for Transformations
+# Linearity Assumptions and Checks for Transformations
+
+## Residual Models
 
 ```{r augment-and-residualplot, error = F, message=FALSE, echo = F}
 
@@ -141,6 +143,8 @@ ggplot(tmodel_aug, aes(x = .fitted, y=.resid)) +
 ```
 
 Looking at the visualizations above, we can see that the transformed model gives us a much better spread on the residual split around our red line then our untransformed model. As such, the residuals appear roughly symmetrical along the horizontal axis for our transformed plot, so we feel it safe to assume approximate linearity. 
+
+## QQ Plots
 
 ``` {r qq-plot, warning = FALSE, message = FALSE, echo = F}
 ggplot(ptmodel_aug, aes(sample = .resid)) +
