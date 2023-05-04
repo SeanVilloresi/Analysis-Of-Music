@@ -108,6 +108,8 @@ kable(summary_df, caption = "Summary Statistics of Response and Predictors of
 
 # Methods
 
+We will be fitting a linear model to predict streams because Stream is a non-binary numerical variable. Additionally, we are using it to represent a measure of success, and we want to determine what factors have a linear relationship with streams to determine correlations between predictors and success. Based on our EDA, we chose not to use any interaction terms.
+
 ## Variable Selection
 
 ```{r setup-for-variable-selection, message = F, warning = F, echo = F}
