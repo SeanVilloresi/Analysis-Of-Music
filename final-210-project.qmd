@@ -27,7 +27,7 @@ We felt that the dataset had a sufficient number of both quantitative and catego
 
 ## Read in the data
 
-```{r read-data, message = F, warning = F}
+```{r read-data, message = F, warning = F, echo = F}
 library(tidyverse)
 library(tidymodels)
 library(broom)
@@ -43,7 +43,7 @@ music <- read_csv("data/Spotify_Youtube.csv")
 
 ## Cleaning the data
 
-```{r cleaning, message = F, warning = F}
+```{r cleaning, message = F, warning = F, echo =F}
 music$Uri=NULL
 music$Url_youtube=NULL
 music$Url_spotify=NULL
@@ -60,7 +60,7 @@ sum(is.na(music$Speechiness))
 
 ## Variable Selection
 
-```{r setup-for-variable-selection, message = F, warning = F}
+```{r setup-for-variable-selection, message = F, warning = F, echo = F}
 
 indices <- sample(1:19691, size = 15000 * 0.8, replace = F)
 train.data  <- music %>% 
@@ -77,7 +77,7 @@ lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechine
 ```
 
 
-```{r stepwise-selection, message = F, warning = F}
+```{r stepwise-selection, message = F, warning = F, echo = F}
 output <- capture.output(stepAIC(lm_all, 
         scope = list(lower = lm_none, upper = lm_all),
         data = music, direction = "both"))
@@ -88,7 +88,7 @@ cat(tail(output, 39), sep = "\n")
 
 ```
 
-```{r lasso, message = F, error = F}
+```{r lasso, message = F, error = F, echo = F}
 y <- music$Stream
 x <- model.matrix(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
@@ -104,7 +104,7 @@ m_best$beta
 
 ```
 
-```{r end-of-variable-selection, message = F, error = F}
+```{r end-of-variable-selection, message = F, error = F, echo = F}
 ## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
 pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness 
                          + Speechiness +
@@ -117,7 +117,7 @@ pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness
 
 ## Linearity Assumptions and Checks for Transformations
 
-```{r augment-and-residualplot }
+```{r augment-and-residualplot, error = F, message=FALSE, echo = F}
 
 ptmodel_aug <- augment(pretransform_model)
 
@@ -146,7 +146,7 @@ ggplot(tmodel_aug, aes(x = .fitted, y=.resid)) +
 
 Looking at the visualizations above, we can see that the transformed model gives us a much better spread on the residual split around our red line then our untransformed model. As such, the residuals appear roughly symmetrical along the horizontal axis for our transformed plot, so we feel it safe to assume approximate linearity. 
 
-``` {r qq-plot, warning = FALSE, message = FALSE}
+``` {r qq-plot, warning = FALSE, message = FALSE, echo = F}
 ggplot(ptmodel_aug, aes(sample = .resid)) +
   stat_qq() + 
   stat_qq_line() + 
