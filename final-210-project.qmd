@@ -239,6 +239,10 @@ For our independence assumption, we believe that our data set satisfies this con
 After looking at our two graphs above, we believe that our transformed model will provide a better measurement of our data, and provide better predicitons of a songs streams.
 # Results
 
+```{r results, message = F, echo = F, warning = F}
+summary(transform_model)
+
+```
 
 # Appendix
 
