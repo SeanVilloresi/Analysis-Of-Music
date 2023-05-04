@@ -129,6 +129,7 @@ lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechine
                Duration_ms + official_video, data = music)
 
 ```
+To start our modeling process, we determined which variables we would use as our “baseline”, as described in our introduction above. From these, we decided the first thing we needed to do was determine if any of the variables were seen as non important/non essential, as we want to avoid overcomplicating our model. To start, we performed two variable selection methods, by using a forward and backwards stepwise method starting at our linear model for all terms, and we then proceeded to use a lasso method as well. Between these two methods, we are fairly confident that we can determine the best variables to use.
 
 ### Step-wise Selection
 
@@ -161,6 +162,9 @@ m_best$beta
 
 ```
 
+
+
+
 ```{r end-of-variable-selection, message = F, error = F, echo = F}
 ## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
 pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness 
@@ -174,16 +178,17 @@ pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness
 
 ## Linearity Assumptions and Checks for Transformations
 
+With our variables chosen, we move on to now looking at whether our base model satisfies our assumptions required for a linear mode. We also compared our results to a transformed model where we take the log of our outcome variable Streams.
+
 ### Residual Models
 
 ```{r augment-and-residualplot, error = F, message=FALSE, echo = F, fig.width=5, fig.height=3}
 
 ptmodel_aug <- augment(pretransform_model)
 
-transform_model <- lm(log(Stream) ~ Danceability + Energy + factor(Key) + Loudness + 
-                        Speechiness +Acousticness + Instrumentalness + Liveness 
-                      +  Valence + Tempo + Duration_ms + official_video, 
-                      data = music)
+transform_model <- lm(log(Stream) ~ Danceability + Energy + factor(Key) + 
+                        Loudness + Speechiness +Acousticness + Instrumentalness +                           Liveness +  Valence + Tempo + Duration_ms + 
+                        official_video, data = music)
 
 tmodel_aug <- augment(transform_model)
 
@@ -203,7 +208,11 @@ ggplot(tmodel_aug, aes(x = .fitted, y=.resid)) +
 
 ```
 
-Looking at the visualizations above, we can see that the transformed model gives us a much better spread on the residual split around our red line then our untransformed model. As such, the residuals appear roughly symmetrical along the horizontal axis for our transformed plot, so we feel it safe to assume approximate linearity. 
+Looking at the visualizations above, we can see that the transformed model gives us a much better spread on the residual split around our red line then our untransformed model. As such, the residuals appear roughly symmetrical along the horizontal axis for our transformed plot, so we feel it safe to assume approximate linearity, specifically for our transformed model.
+ 
+As it relates to constant variance, we believe that our fitted values for our transformed model seem to satisfy this condition. Other than a few outliers in our negative residual side on the right, overall we seem to see fairly constant trends with how spread out our data is.
+
+
 
 ### QQ Plots
 
@@ -223,6 +232,8 @@ ggplot(tmodel_aug, aes(sample = .resid)) +
        y = "Sample quantiles")
 
 ```
+
+Now looking at our qq plots, we see our trend continue, where our untransformed model performs quite bad as can be seen above, while our transformed model hangs much closer to our standardized line, making it a better fit. Here, we feel safe to assume normality for our transformed plot, as other then some slight deviation towards the tails, our data points hang tight to the normal line.
 
 # Results
 
