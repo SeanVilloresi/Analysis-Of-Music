@@ -21,6 +21,8 @@ We chose the following variables as potential predictors based on their relevanc
 
 We felt that the dataset had a sufficient number of both quantitative and categorical variables to test predictability. Thus, we chose not to create additional predictors. However, in our data cleaning process, we removed any observations with missing values for streams, danceability, and licensed. After removing missing values for these variables, there were no remaining observations with missing data for relevant variables as listed above.
 
+We hypothesized that Danceability and Loudness would be significant predictors of song success measured in number of streams. We used domain knowledge and the understanding that songs that top the charts tend to be the ones that are catchy, and both danceability and loudness contribute to this. We use this model in our results section to determine if our final model is better than this model.
+
 ```{r read-data, message = F, warning = F, echo = F}
 library(tidyverse)
 library(tidymodels)
@@ -243,7 +245,6 @@ After looking at our two graphs above, we believe that our transformed model wil
 
 ```{r results, message = F, echo = F, warning = F}
 summary(transform_model)
-
 ```
 
 ```{r}
