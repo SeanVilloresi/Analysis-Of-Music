@@ -238,7 +238,7 @@ After looking at our two graphs above, we believe that our transformed model wil
 
 # Results
 
-Our final model is $18.94 + .2433 * Danceability - 1.088 * Energy + (-.002984*Key_1 - .07814*Key_2 + .01597*Key_3 + .005302 * Key_4 - .01527*Key_5 + .02348*Key_6 - .05105*Key_7 + .01707*Key_8 - .07646*Key_9 - .08253*Key_{10} - .02742*Key_{11}) + .06579 * Loudness - 2.401 * Speechiness - .565*Acousticness - .4900 * Instrumentalness -.3855 * Liveness - .2931 * Valence + .001109 * Tempo + 1.507*10^-7 * Duration_ms + .2820 * official_videoTRUE$
+Our final model is $18.94 + .2433 * Danceability - 1.088 * Energy + (-.002984*Key_1 - .07814*Key_2 + .01597*Key_3 + .005302 * Key_4 - .01527*Key_5 + .02348*Key_6 - .05105*Key_7 + .01707*Key_8 - .07646*Key_9 - .08253*Key_{10} - .02742*Key_{11}) + .06579 * Loudness - 2.401 * Speechiness - .565*Acousticness - .4900 * Instrumentalness -.3855 * Liveness - .2931 * Valence + .001109 * Tempo + 1.507*10^{-7} * Duration_ms + .2820 * official\_videoTRUE$
 
 The model statistics are shown in Figure 2 in the Appendix.
     
@@ -258,9 +258,9 @@ final_model <- train(log(Stream) ~ Danceability + Energy + factor(Key) +
                    + Liveness +  Valence + Tempo + Duration_ms + official_video,
                    data = music, method = "lm", trControl = cv_method)
 
-print(hypothesis_model)
-print(all_model)
-print(final_model)
+#print(hypothesis_model)
+#print(all_model)
+#print(final_model)
 
 dfmodel <- data.frame(Model = c("Hypothesis_Model", "All_Model", "Transform_Model"),
                  R_squared = c(hypothesis_model$results$Rsquared, all_model$results$Rsquared, final_model$results$Rsquared),
@@ -285,6 +285,7 @@ One limitation of the data we used is that it only represents one day of data. O
 
 In the future, data beyond a singular day should be used for analysis, in addition to data from other streaming services. To test our model further, we could apply it to data from other streaming services to see how it performs. Future work should include exploration of the significance of predictors relative to each other and incorporation of the data from YouTube.
 
+\newpage
 # Appendix
 
 ## Figure 1
