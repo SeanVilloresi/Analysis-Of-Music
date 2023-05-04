@@ -13,7 +13,7 @@ Music is an essential part of culture, creativity, and history. Specific songs a
 
 ## Data
 
-Wanting to explore this question in our project, we found a dataset1 on Kaggle with data on Spotify streams, Youtube views, and various song characteristics. There are 28 columns, and 20,719 observations. The data was collected on Februrary 7th, 2023 by extracting the data from Youtube and Spotify. Our goal is to determine and develop the best model for predicting the success of a song based on the number of streams. We chose to use streams (as opposed to Youtube views) as our outcome variable because of inconsistencies within the data when it comes to music videos.
+Wanting to explore this question in our project, we found a dataset (Rastelli, S. (2023, February). Spotify and Youtube, Version 2.) on Kaggle with data on Spotify streams, Youtube views, and various song characteristics. There are 28 columns, and 20,719 observations. The data was collected on Februrary 7th, 2023 by extracting the data from Youtube and Spotify. Our goal is to determine and develop the best model for predicting the success of a song based on the number of streams. We chose to use streams (as opposed to Youtube views) as our outcome variable because of inconsistencies within the data when it comes to music videos.
 Some music videos were not from the artist's channel (unofficial), and we wanted to test this variable as a predictor.
 
 Variables: We will be using streams as the model's outcome variable.
