@@ -35,6 +35,7 @@ library(lme4)
 library(corrplot)
 library(car)
 library(reshape2)
+library(gridExtra)
 library(knitr)
 music <- read_csv("data/Spotify_Youtube.csv")
 ```
@@ -63,27 +64,28 @@ ggplot(music, aes(x = Stream)) +
        x = "Streams", y = "Count")
 ```
 
-The distribution of the response variable Stream is skewed to the right with most of the data having lower values for Streams. This is understandable because a handful of songs are extremely popular while most songs on Spotify tend to be listened to by specific niches of people.
+The distribution of the response variable Stream is skewed to the right with most of the data having lower values for Streams. This is understandable because a handful of songs are extremely popular and these outliers cause the distribution visualization to have most of the data concentrated on the left.
 
-```{r predictor-scatterplot, message = F, warning = F, echo = F, fig.width=5, fig.height=3}
+```{r predictor-scatterplot, message = F, warning = F, echo = F}
 
-ggplot(music, aes(x = Loudness, y = Stream)) +
+p1 <- ggplot(music, aes(x = Loudness, y = Stream)) +
   geom_point(color = "lightblue") +
   geom_smooth(method = "lm") +
   ggtitle("Streams vs. Loudness") +
   labs(x = "Loudness", y = "Streams")
 
-ggplot(music, aes(x = Danceability, y = Stream)) +
+p2 <- ggplot(music, aes(x = Danceability, y = Stream)) +
   geom_point(color = "lightblue") +
   geom_smooth(method = "lm") +
   labs(title = "Streams vs. Danceability",
        x = "Danceability", y = "Streams")
+
+grid.arrange(p1, p2, ncol=2)
 ```
 
 We visualized the relationship between Streams and all the predictors in the dataset. Danceability and Loudness showed slight positive relationships with the response variable Stream. The remaining visualizations are in the Appendix.
 
 ```{r VIF, message = F, warning = F, echo = F}
-# i also cant put these in a table
 model <- lm(Stream ~ Danceability + Energy + Loudness + Speechiness + 
               Acousticness + Instrumentalness + Liveness + Valence + Tempo +
             Duration_ms + official_video,
@@ -91,21 +93,18 @@ model <- lm(Stream ~ Danceability + Energy + Loudness + Speechiness +
 kable(vif(model), caption = "VIF values")
 ```
 
-The results of looking at Variance Inflation Factor are values in a range between 1 and 4. Therefore, we chose to keep all the initial predictors when performing variable selection.
+The results of looking at Variance Inflation Factor are values in a range between 1 and 4. Because all the values were below 4, they did not demonstrate much multicollinearity. Thus, we chose to keep all the initial predictors when performing variable selection and did not include any interaction terms. 
 
 ```{r summary-stats, message = F, warning = F, echo = F}
-# i cant put these in a nice tidy table for the life of me
-# also idk how to intrepret them
-
 summary_stats <- sapply(music[, c("Stream", "Danceability", "Loudness")], summary)
 
 
 summary_df <- as.data.frame(summary_stats)
 
-kable(summary_df, caption = "Summary Statistics of Three Columns")
+kable(summary_df, caption = "Summary Statistics of Response and Predictors of
+      Interest")
 ```
 
-*interpretation*
 
 # Methods
 
@@ -134,9 +133,7 @@ output <- capture.output(stepAIC(lm_all,
         data = music, direction = "both"))
 
 ##Just outputs final step
-cat(tail(output, 39), sep = "\n")
-
-
+#cat(tail(output, 39), sep = "\n")
 ```
 
 ### Lasso Model
@@ -233,62 +230,4 @@ Now looking at our qq plots, we see our trend continue, where our untransformed 
 
 # Appendix
 
-```{r predictors}
-ggplot(music, aes(x = Energy, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Energy",
-       x = "Energy", y = "Streams")
 
-ggplot(music, aes(x = Key, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Key",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Speechiness, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Speech",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Acousticness, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Acoustic",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Instrumentalness, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Instrumental",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Liveness, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Liveness",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Valence, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Valence",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Tempo, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Tempo",
-       x = "Energy", y = "Streams")
-
-ggplot(music, aes(x = Duration_ms, y = Stream)) +
-  geom_point(color = "blue") +
-  geom_smooth(method = "lm") +
-  labs(title = "Streams vs. Duration_ms",
-       x = "Energy", y = "Streams")
-```
-
-```{r}
-summary(music[8:18])
-```
