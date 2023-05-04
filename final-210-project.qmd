@@ -176,7 +176,7 @@ pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness
 
 ### Residual Models
 
-```{r augment-and-residualplot, error = F, message=FALSE, echo = F}
+```{r augment-and-residualplot, error = F, message=FALSE, echo = F, fig.width=5, fig.height=3}
 
 ptmodel_aug <- augment(pretransform_model)
 
@@ -207,7 +207,7 @@ Looking at the visualizations above, we can see that the transformed model gives
 
 ### QQ Plots
 
-``` {r qq-plot, warning = FALSE, message = FALSE, echo = F}
+``` {r qq-plot, warning = FALSE, message = FALSE, echo = F, fig.width=5, fig.height=3}
 ggplot(ptmodel_aug, aes(sample = .resid)) +
   stat_qq() + 
   stat_qq_line() + 
