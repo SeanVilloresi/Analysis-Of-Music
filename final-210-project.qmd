@@ -265,6 +265,12 @@ final_model <- train(log(Stream) ~ Danceability + Energy + factor(Key) +
 print(hypothesis_model)
 print(all_model)
 print(final_model)
+
+dfmodel <- data.frame(Model = c("Hypothesis_Model", "All_Model", "Transform_Model"),
+                 R_squared = c(hypothesis_model$results$Rsquared, all_model$results$Rsquared, final_model$results$Rsquared),
+                 RMSE = c(hypothesis_model$results$RMSE, all_model$results$RMSE, final_model$results$RMSE))
+
+kable(dfmodel , caption = "Model Fit Statistics")
 ```
 
 # Appendix
