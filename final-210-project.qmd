@@ -232,7 +232,6 @@ ggplot(tmodel_aug, aes(sample = .resid)) +
   labs(x = "Theoretical quantiles", 
        y = "Sample quantiles",
        title = "Transformed Model")
-
 ```
 
 Now looking at our qq plots, we see our trend continue, where our untransformed model performs quite bad as can be seen above, while our transformed model hangs much closer to our standardized line, making it a better fit. Here, we feel safe to assume normality for our transformed plot, as other then some slight deviation towards the tails, our data points hang tight to the normal line.
@@ -243,11 +242,16 @@ After looking at our two graphs above, we believe that our transformed model wil
 
 # Results
 
+Our final model is log(Stream) ~ Danceability + Energy + factor(Key) + 
+    Loudness + Speechiness + Acousticness + Instrumentalness + 
+    Liveness + Valence + Tempo + Duration_ms + official_video
+
 ```{r results, message = F, echo = F, warning = F}
+# put in table
 summary(transform_model)
 ```
 
-```{r}
+```{r model-fit, echo = F, warning = F, message = F}
 set.seed(1)
 cv_method <- trainControl(method = "cv", number = 10)
 hypothesis_model <- train(Stream ~ Danceability + Loudness,
@@ -274,15 +278,13 @@ dfmodel <- data.frame(Model = c("Hypothesis_Model", "All_Model", "Transform_Mode
 kable(dfmodel , caption = "Model Fit Statistics")
 ```
 
-
-```{r final-model, message = F, warning = F, echo = F}
-summary(final_model)
-```
-Looking at our final model, we'll just look at a couple of our important variables.
+Looking at our final model, we'll just look at a couple of our important hypothesized variables.
 
 For Danceability, we have a coefficient of .2433. In this context, this means that for every 1 unit increase in the measure of danceability, we would predict an increase of .2433 in the log of the number of Streams for a given song holding all else constant. Looking at our p-value for our Danceability as well, our p-value compared to an alpha level of .05 is less then it, and as such danceability appears to be a strong predictor of streams.
 
 For Loudness, we have a coefficient of .06579. In this context, this means that for every 1 unit increase in the measure of loudness, we would predict an increase of .2433 in the log of the number of Streams for a given song holding all else constant. Looking at our p-value for our loudness as well, our p-value compared to an alpha level of .05 is less then it, and as such loudness appears to be a strong predictor of streams.
+
+Based on our model fit statistics, our final model with the log-transformed response variable and 12 predictors has the highest r-squared value of 0.0661358	and the lowest RMSE value of 1.592160. In addition, the un-transformed model with 12 predictors performed better than our hypothesized model using only Danceability and Loudness. Thus, we find that the model with the most predictive power included all 12 potential predictors and also required a transformation. We were correct in hypothesizing that Danceability and Loudness would be significant predictors. The final model tells us that the danceability, energy, key, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo, and duration of a song in addition to whether the music video was official, are all significant in predicting the success of a song measured in number of streams. 
 
 # Appendix
 
