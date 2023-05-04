@@ -17,7 +17,7 @@ Wanting to explore this question in our project, we found a dataset1 on Kaggle w
 Some music videos were not from the artist's channel (unofficial), and we wanted to test this variable as a predictor.
 
 Variables: We will be using streams as the model's outcome variable.
-We chose the following variables as potential predictors based on their relevance to the listening experience of a song (as opposed to a more descriptive variable such as Description) *Stream*: number of streams of the song on Spotify *Energy*: a measure from 0.0 to 1.0 representing a perceptual measure (dynamic range, loudness, timbre, onset rate, general entropy) of intensity and activity. *Key*: the key the track is in measured in ntegers representing pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D. If no key was detected, the value is -1. *Loudness*: the overall loudness of a track in decibels (dB) *Speechiness*: a measure from 0.0 to 1.0 representing the presence of spoken words in a track. *Acousticness*: a from 0.0 to 1.0 of whether the track is acoustic. *Instrumentalness*: a measure from 0.0 to 1.0 that predicts whether a track contains no vocals. *Liveness*: a measure from 0.0 to 1.0 that detects the presence of an audience in the recording. *Valence*: a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. *Tempo*: the overall estimated tempo of a track in beats per minute (BPM). *Duration_ms*: the duration of the track in milliseconds. *Official_video*: boolean value that indicates if the video found is the official video of the song.
+We chose the following variables as potential predictors based on their relevance to the listening experience of a song (as opposed to a more descriptive variable such as Description) *Stream*: number of streams of the song on Spotify *Energy*: a measure from 0.0 to 1.0 representing a perceptual measure (dynamic range, loudness, timbre, onset rate, general entropy) of intensity and activity. *Key*: the key the track is in measured in integers representing pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D. If no key was detected, the value is -1. *Loudness*: the overall loudness of a track in decibels (dB) *Speechiness*: a measure from 0.0 to 1.0 representing the presence of spoken words in a track. *Acousticness*: a from 0.0 to 1.0 of whether the track is acoustic. *Instrumentalness*: a measure from 0.0 to 1.0 that predicts whether a track contains no vocals. *Liveness*: a measure from 0.0 to 1.0 that detects the presence of an audience in the recording. *Valence*: a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. *Tempo*: the overall estimated tempo of a track in beats per minute (BPM). *Duration_ms*: the duration of the track in milliseconds. *Official_video*: boolean value that indicates if the video found is the official video of the song.
 
 We felt that the dataset had a sufficient number of both quantitative and categorical variables to test predictability. Thus, we chose not to create additional predictors. However, in our data cleaning process, we removed any observations with missing values for streams, danceability, and licensed. After removing missing values for these variables, there were no remaining observations with missing data for relevant variables as listed above.
 
@@ -163,19 +163,15 @@ matrix_df <- as.data.frame(as.matrix(m_best$beta))
 
 ```
 
-With lasso however, we came to the same conclusion, as our lasso kept essentially every variable to a fairly significant coefficient. As such, we have decided to move on using all of the variables that we had started with at the beginning as predictor variables
+With LASSO however, we came to the same conclusion, as our lasso kept essentially every variable to a fairly significant coefficient. As such, we have decided to move on using all of the variables that we had started with at the beginning as predictor variables. The LASSO coefficient results are in Figure 1 of the Appendix.
 
 
 ```{r end-of-variable-selection, message = F, error = F, echo = F}
-## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
 pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness 
                          + Speechiness + Acousticness + Instrumentalness 
                          + Liveness +  Valence + Tempo + Duration_ms 
                          + official_video, 
                          data = music)
-
-
-
 ```
 
 ## Linearity Assumptions and Checks for Transformations
@@ -238,15 +234,14 @@ Now looking at our qq plots, we see our trend continue, where our untransformed 
 
 For our independence assumption, we believe that our data set satisfies this condition. Our data was collected all on the same day, and the streams and/or variables associated with each song should not be impacted by those of other songs.
 
-After looking at our two graphs above, we believe that our transformed model will provide a better measurement of our data, and provide better predicitons of a songs streams.
+After looking at our two graphs above, we believe that our transformed model will provide a better measurement of our data, and provide better predictions of a songs streams.
 
 # Results
 
 Our final model is $18.94 + .2433 * Danceability - 1.088 * Energy + (-.002984*Key_1 - .07814*Key_2 + .01597*Key_3 + .005302 * Key_4 - .01527*Key_5 + .02348*Key_6 - .05105*Key_7 + .01707*Key_8 - .07646*Key_9 - .08253*Key_{10} - .02742*Key_{11}) + .06579 * Loudness - 2.401 * Speechiness - .565*Acousticness - .4900 * Instrumentalness -.3855 * Liveness - .2931 * Valence + .001109 * Tempo + 1.507*10^-7 * Duration_ms + .2820 * official_videoTRUE$
+
+The model statistics are shown in Figure 2 in the Appendix.
     
-
-
-
 ```{r model-fit, echo = F, warning = F, message = F}
 set.seed(1)
 cv_method <- trainControl(method = "cv", number = 10)
@@ -282,17 +277,26 @@ For Loudness, we have a coefficient of .06579. In this context, this means that 
 
 Based on our model fit statistics, our final model with the log-transformed response variable and 12 predictors has the highest r-squared value of 0.0661358	and the lowest RMSE value of 1.592160. In addition, the un-transformed model with 12 predictors performed better than our hypothesized model using only Danceability and Loudness. Thus, we find that the model with the most predictive power included all 12 potential predictors and also required a transformation. We were correct in hypothesizing that Danceability and Loudness would be significant predictors. The final model tells us that the danceability, energy, key, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo, and duration of a song in addition to whether the music video was official, are all significant in predicting the success of a song measured in number of streams. 
 
+# Discussion
+
+After completing a comprehensive analysis on predictors of song streams, we found that there are many answers to our research question - what makes a song successful? We initially considered the danceability and loudness of the song as significant contributors to the significance of a song. We found that both of these predictors are statistically significant but adding more predictors strengthens the final model's predictability power, as measured by RMSE and r-squared values. In the context of the music industry, our hypothesis means that artist's should consider the danceability and loudness of their songs if number of streams is important to them. Further, to maximize streams, they should consider all 12 predictors we used as characteristics in their song. We find that songs with higher danceability, energy, acoustic, valence, and loudness levels tend to get more streams. Additionally, specific keys, the presence of an audience, less spoken words, faster tempos, longer songs, and an indication of an official music video also lead to higher streams.
+
+One limitation of the data we used is that it only represents one day of data. Our conclusions are only directly applicable to the songs on the day the data was collected. Another limitation is that it only includes Spotify streams, so our analysis does not include conclusions based on data for other streaming services. Also, we did not standardize the units of our predictors to explore the different levels of significance of their respective impacts on streams. Had we done this, we could make conclusions about which song characteristics were more important than others for predicting success. Finally, we were unable to use the YouTube data due to inconsistencies with the observations.
+
+In the future, data beyond a singular day should be used for analysis, in addition to data from other streaming services. To test our model further, we could apply it to data from other streaming services to see how it performs. Future work should include exploration of the significance of predictors relative to each other and incorporation of the data from YouTube.
+
 # Appendix
 
-```{r results, message = F, echo = F, warning = F}
-# put in table
-summary(transform_model)
-```
+## Figure 1
 
 ```{r appendix-stuff, message = F, warning = F, echo = F}
-
 kable(matrix_df , caption = "Lasso Coefficients")
+```
 
+## Figure 2
+
+```{r results, message = F, echo = F, warning = F}
+summary(transform_model)
 ```
 
 
