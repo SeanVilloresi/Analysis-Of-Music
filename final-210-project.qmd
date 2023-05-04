@@ -167,9 +167,10 @@ With lasso however, we came to the same conclusion, as our lasso kept essentiall
 ```{r end-of-variable-selection, message = F, error = F, echo = F}
 ## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
 pretransform_model <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness 
-                         + Speechiness +
-               Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
-               Duration_ms + official_video, data = music)
+                         + Speechiness + Acousticness + Instrumentalness 
+                         + Liveness +  Valence + Tempo + Duration_ms 
+                         + official_video, 
+                         data = music)
 
 
 
@@ -237,11 +238,33 @@ Now looking at our qq plots, we see our trend continue, where our untransformed 
 For our independence assumption, we believe that our data set satisfies this condition. Our data was collected all on the same day, and the streams and/or variables associated with each song should not be impacted by those of other songs.
 
 After looking at our two graphs above, we believe that our transformed model will provide a better measurement of our data, and provide better predicitons of a songs streams.
+
 # Results
 
 ```{r results, message = F, echo = F, warning = F}
 summary(transform_model)
 
+```
+
+```{r}
+set.seed(1)
+cv_method <- trainControl(method = "cv", number = 10)
+hypothesis_model <- train(Stream ~ Danceability + Loudness,
+                   data = music, method = "lm", trControl = cv_method)
+
+all_model <- train(Stream ~ Danceability + Energy + factor(Key) + Loudness 
+                         + Speechiness + Acousticness + Instrumentalness 
+                   + Liveness +  Valence + Tempo + Duration_ms + official_video,
+                   data = music, method = "lm", trControl = cv_method)
+
+final_model <- train(log(Stream) ~ Danceability + Energy + factor(Key) + 
+                       Loudness + Speechiness + Acousticness + Instrumentalness 
+                   + Liveness +  Valence + Tempo + Duration_ms + official_video,
+                   data = music, method = "lm", trControl = cv_method)
+
+print(hypothesis_model)
+print(all_model)
+print(final_model)
 ```
 
 # Appendix
