@@ -138,6 +138,9 @@ output <- capture.output(stepAIC(lm_all,
 #cat(tail(output, 39), sep = "\n")
 ```
 
+From our stepwise method, the only variable it seemed to remove was Tempo, and even with that the change in AIC with or without tempo was fairly minimal, so it was from this point that we decided to also use lasso in order to get another perspective on the matter, knowing that stepwise functions can be very influenced by the starting model and its order of variables
+
+
 ### Lasso Model
 
 ```{r lasso, message = F, error = F, echo = F}
@@ -157,6 +160,9 @@ matrix_df <- as.data.frame(as.matrix(m_best$beta))
 kable(matrix_df , caption = "Lasso Coefficients")
 
 ```
+
+With lasso however, we came to the same conclusion, as our lasso kept essentially every variable to a fairly significant coefficient. As such, we have decided to move on using all of the variables that we had started with at the beginning as predictor variables
+
 
 ```{r end-of-variable-selection, message = F, error = F, echo = F}
 ## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
@@ -228,7 +234,11 @@ ggplot(tmodel_aug, aes(sample = .resid)) +
 
 Now looking at our qq plots, we see our trend continue, where our untransformed model performs quite bad as can be seen above, while our transformed model hangs much closer to our standardized line, making it a better fit. Here, we feel safe to assume normality for our transformed plot, as other then some slight deviation towards the tails, our data points hang tight to the normal line.
 
+For our independence assumption, we believe that our data set satisfies this condition. Our data was collected all on the same day, and the streams and/or variables associated with each song should not be impacted by those of other songs.
+
+After looking at our two graphs above, we believe that our transformed model will provide a better measurement of our data, and provide better predicitons of a songs streams.
 # Results
+
 
 # Appendix
 
