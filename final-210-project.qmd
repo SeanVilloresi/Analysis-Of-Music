@@ -2,6 +2,9 @@
 title: "Final 210 Project"
 author: "Sean Villoresi and Ellie Kang"
 format: pdf
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
 # Introduction
@@ -10,24 +13,13 @@ Music is an essential part of culture, creativity, and history. Specific songs a
 
 ## Data
 
-Wanting to explore this question in our project, we found a dataset1 on Kaggle with data on Spotify streams, Youtube views, and various song characteristics. There are 28 columns, and 20,719 observations. The data was collected on Februrary 7th, 2023 by extracting the data from Youtube and Spotify. Our goal is to determine and develop the best model for predicting the success of a song based on the number of streams. We chose to use streams (as opposed to Youtube views) as our outcome variable because of inconsistencies within the data when it comes to music videos. Some music videos were not from the artist’s channel (unofficial), and we wanted to test this variable as a predictor.
+Wanting to explore this question in our project, we found a dataset1 on Kaggle with data on Spotify streams, Youtube views, and various song characteristics. There are 28 columns, and 20,719 observations. The data was collected on Februrary 7th, 2023 by extracting the data from Youtube and Spotify. Our goal is to determine and develop the best model for predicting the success of a song based on the number of streams. We chose to use streams (as opposed to Youtube views) as our outcome variable because of inconsistencies within the data when it comes to music videos.
+Some music videos were not from the artist's channel (unofficial), and we wanted to test this variable as a predictor.
 
-Variables: We will be using streams as the model’s outcome variable. We chose the following variables as potential predictors based on their relevance to the listening experience of a song (as opposed to a more descriptive variable such as Description)
-*Stream*: number of streams of the song on Spotify
-*Energy*:  a measure from 0.0 to 1.0 representing a perceptual measure (dynamic range, loudness, timbre, onset rate, general entropy) of intensity and activity.
-*Key*: the key the track is in measured in ntegers representing pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D. If no key was detected, the value is -1.
-*Loudness*: the overall loudness of a track in decibels (dB)
-*Speechiness*: a measure from 0.0 to 1.0 representing the presence of spoken words in a track. 
-*Acousticness*: a from 0.0 to 1.0 of whether the track is acoustic.
-*Instrumentalness*: a measure from 0.0 to 1.0 that predicts whether a track contains no vocals. 
-*Liveness*: a measure from 0.0 to 1.0 that detects the presence of an audience in the recording.
-*Valence*: a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track.
-*Tempo*: the overall estimated tempo of a track in beats per minute (BPM).
-*Duration_ms*: the duration of the track in milliseconds.
-*Official_video*: boolean value that indicates if the video found is the official video of the song.
+Variables: We will be using streams as the model's outcome variable.
+We chose the following variables as potential predictors based on their relevance to the listening experience of a song (as opposed to a more descriptive variable such as Description) *Stream*: number of streams of the song on Spotify *Energy*: a measure from 0.0 to 1.0 representing a perceptual measure (dynamic range, loudness, timbre, onset rate, general entropy) of intensity and activity. *Key*: the key the track is in measured in ntegers representing pitches using standard Pitch Class notation. E.g. 0 = C, 1 = C♯/D♭, 2 = D. If no key was detected, the value is -1. *Loudness*: the overall loudness of a track in decibels (dB) *Speechiness*: a measure from 0.0 to 1.0 representing the presence of spoken words in a track. *Acousticness*: a from 0.0 to 1.0 of whether the track is acoustic. *Instrumentalness*: a measure from 0.0 to 1.0 that predicts whether a track contains no vocals. *Liveness*: a measure from 0.0 to 1.0 that detects the presence of an audience in the recording. *Valence*: a measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. *Tempo*: the overall estimated tempo of a track in beats per minute (BPM). *Duration_ms*: the duration of the track in milliseconds. *Official_video*: boolean value that indicates if the video found is the official video of the song.
 
 We felt that the dataset had a sufficient number of both quantitative and categorical variables to test predictability. Thus, we chose not to create additional predictors. However, in our data cleaning process, we removed any observations with missing values for streams, danceability, and licensed. After removing missing values for these variables, there were no remaining observations with missing data for relevant variables as listed above.
-
 
 ```{r read-data, message = F, warning = F, echo = F}
 library(tidyverse)
@@ -46,8 +38,6 @@ library(reshape2)
 library(knitr)
 music <- read_csv("data/Spotify_Youtube.csv")
 ```
-
-
 
 ```{r cleaning, message = F, warning = F, echo =F}
 music$Uri=NULL
@@ -72,10 +62,8 @@ ggplot(music, aes(x = Stream)) +
   labs(title = "Distribution of Streams",
        x = "Streams", y = "Count")
 ```
-The distribution of the response variable Stream is skewed to the right with
-most of the data having lower values for Streams. This is understandable because
-a handful of songs are extremely popular while most songs on Spotify tend to be
-listened to by specific niches of people.
+
+The distribution of the response variable Stream is skewed to the right with most of the data having lower values for Streams. This is understandable because a handful of songs are extremely popular while most songs on Spotify tend to be listened to by specific niches of people.
 
 ```{r predictor-scatterplot, message = F, warning = F, echo = F, fig.width=5, fig.height=3}
 
@@ -91,8 +79,8 @@ ggplot(music, aes(x = Danceability, y = Stream)) +
   labs(title = "Streams vs. Danceability",
        x = "Danceability", y = "Streams")
 ```
-We visualized the relationship between Streams and all the predictors in the
-dataset. Danceability and Loudness showed slight positive relationships with the response variable Stream. The remaining visualizations are in the Appendix.
+
+We visualized the relationship between Streams and all the predictors in the dataset. Danceability and Loudness showed slight positive relationships with the response variable Stream. The remaining visualizations are in the Appendix.
 
 ```{r VIF, message = F, warning = F, echo = F}
 # i also cant put these in a table
@@ -100,10 +88,10 @@ model <- lm(Stream ~ Danceability + Energy + Loudness + Speechiness +
               Acousticness + Instrumentalness + Liveness + Valence + Tempo +
             Duration_ms + official_video,
             data = music)
-vif(model)
+kable(vif(model), caption = "VIF values")
 ```
-The results of looking at Variance Inflation Factor are values in a range between 1
-and 4. Therefore, we chose to keep all the initial predictors when performing variable selection.
+
+The results of looking at Variance Inflation Factor are values in a range between 1 and 4. Therefore, we chose to keep all the initial predictors when performing variable selection.
 
 ```{r summary-stats, message = F, warning = F, echo = F}
 # i cant put these in a nice tidy table for the life of me
@@ -134,7 +122,9 @@ lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechine
                Duration_ms + official_video, data = music)
 
 ```
-To start our modeling process, we determined which variables we would use as our “baseline”, as described in our introduction above. From these, we decided the first thing we needed to do was determine if any of the variables were seen as non important/non essential, as we want to avoid overcomplicating our model. To start, we performed two variable selection methods, by using a forward and backwards stepwise method starting at our linear model for all terms, and we then proceeded to use a lasso method as well. Between these two methods, we are fairly confident that we can determine the best variables to use.
+
+To start our modeling process, we determined which variables we would use as our "baseline", as described in our introduction above. From these, we decided the first thing we needed to do was determine if any of the variables were seen as non important/non essential, as we want to avoid overcomplicating our model. To start, we performed two variable selection methods, by using a forward and backwards stepwise method starting at our linear model for all terms, and we then proceeded to use a lasso method as well.
+Between these two methods, we are fairly confident that we can determine the best variables to use.
 
 ### Step-wise Selection
 
@@ -163,12 +153,11 @@ m_lasso_cv <- cv.glmnet(x, y, alpha = 1)
 
 best_lambda <- m_lasso_cv$lambda.min
 m_best <- glmnet(x, y, alpha = 1, lambda = best_lambda)
-m_best$beta 
+
+matrix_df <- as.data.frame(as.matrix(m_best$beta))
+kable(matrix_df , caption = "Lasso Coefficients")
 
 ```
-
-
-
 
 ```{r end-of-variable-selection, message = F, error = F, echo = F}
 ## CHANGE LATER AFTER WE ACTUALLY CHOOSE MODELS FROM ABOVE< CURRENTLY A PLACE HOLDER.
@@ -214,14 +203,12 @@ ggplot(tmodel_aug, aes(x = .fitted, y=.resid)) +
 ```
 
 Looking at the visualizations above, we can see that the transformed model gives us a much better spread on the residual split around our red line then our untransformed model. As such, the residuals appear roughly symmetrical along the horizontal axis for our transformed plot, so we feel it safe to assume approximate linearity, specifically for our transformed model.
- 
+
 As it relates to constant variance, we believe that our fitted values for our transformed model seem to satisfy this condition. Other than a few outliers in our negative residual side on the right, overall we seem to see fairly constant trends with how spread out our data is.
-
-
 
 ### QQ Plots
 
-``` {r qq-plot, warning = FALSE, message = FALSE, echo = F, fig.width=5, fig.height=2.5}
+```{r qq-plot, warning = FALSE, message = FALSE, echo = F, fig.width=5, fig.height=2.5}
 ggplot(ptmodel_aug, aes(sample = .resid)) +
   stat_qq() + 
   stat_qq_line() + 
@@ -244,9 +231,7 @@ Now looking at our qq plots, we see our trend continue, where our untransformed 
 
 # Results
 
-
 # Appendix
-
 
 ```{r predictors}
 ggplot(music, aes(x = Energy, y = Stream)) +
@@ -304,16 +289,6 @@ ggplot(music, aes(x = Duration_ms, y = Stream)) +
        x = "Energy", y = "Streams")
 ```
 
-
 ```{r}
 summary(music[8:18])
 ```
-
-
-
-
-
-
-
-
-
