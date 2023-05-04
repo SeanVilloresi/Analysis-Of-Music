@@ -25,7 +25,7 @@ Duration_ms: the duration of the track in milliseconds.
 Official_video: boolean value that indicates if the video found is the official video of the song.
 We felt that the dataset had a sufficient number of both quantitative and categorical variables to test predictability. Thus, we chose not to create additional predictors. However, in our data cleaning process, we removed any observations with missing values for streams, danceability, and licensed. After removing missing values for these variables, there were no remaining observations with missing data for relevant variables as listed above.
 
-## Read in the data
+
 
 ```{r read-data, message = F, warning = F, echo = F}
 library(tidyverse)
@@ -41,7 +41,7 @@ library(lme4)
 music <- read_csv("data/Spotify_Youtube.csv")
 ```
 
-## Cleaning the data
+
 
 ```{r cleaning, message = F, warning = F, echo =F}
 music$Uri=NULL
@@ -52,7 +52,7 @@ music$Description=NULL
 music <- music[complete.cases(music$Stream), ]
 music <- music[complete.cases(music$Danceability), ]
 music <- music[complete.cases(music$Licensed), ]
-sum(is.na(music$Speechiness))
+
 
 
 
@@ -62,17 +62,13 @@ sum(is.na(music$Speechiness))
 
 ```{r setup-for-variable-selection, message = F, warning = F, echo = F}
 
-indices <- sample(1:19691, size = 15000 * 0.8, replace = F)
-train.data  <- music %>% 
-  slice(indices)
-test.data <- music %>% 
-  slice(-indices)
 
-lm_none <- lm(Stream ~ 1 , data = train.data)
+
+lm_none <- lm(Stream ~ 1 , data = music)
 
 lm_all <- lm(Stream ~ Danceability + Energy + factor(Key) + Loudness + Speechiness +
                Acousticness + Instrumentalness + Liveness +  Valence + Tempo + 
-               Duration_ms + official_video, data = train.data)
+               Duration_ms + official_video, data = music)
 
 ```
 
