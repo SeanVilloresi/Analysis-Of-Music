@@ -282,7 +282,7 @@ Looking at our final model, we'll just look at a couple of our important variabl
 
 For Danceability, we have a coefficient of .2433. In this context, this means that for every 1 unit increase in the measure of danceability, we would predict an increase of .2433 in the log of the number of Streams for a given song holding all else constant. Looking at our p-value for our Danceability as well, our p-value compared to an alpha level of .05 is less then it, and as such danceability appears to be a strong predictor of streams.
 
-For Loudness, we have a coefficient of ..06579. In this context, this means that for every 1 unit increase in the measure of loudness, we would predict an increase of .2433 in the log of the number of Streams for a given song holding all else constant. Looking at our p-value for our loudness as well, our p-value compared to an alpha level of .05 is less then it, and as such loudness appears to be a strong predictor of streams.
+For Loudness, we have a coefficient of .06579. In this context, this means that for every 1 unit increase in the measure of loudness, we would predict an increase of .2433 in the log of the number of Streams for a given song holding all else constant. Looking at our p-value for our loudness as well, our p-value compared to an alpha level of .05 is less then it, and as such loudness appears to be a strong predictor of streams.
 
 # Appendix
 
